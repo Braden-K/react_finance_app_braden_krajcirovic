@@ -10,10 +10,10 @@ function App() {
   return (
     <AuthContextProvider>
       <div className="App">
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <Navbar />
           <Routes>
-            <Route path="/" element={<Main />} />
+            <Route exact path="/" element={<Main />} />
             <Route path="/stockinfo" element={<StockInfo />} />
           </Routes>
         </Router>
