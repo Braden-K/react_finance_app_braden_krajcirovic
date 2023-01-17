@@ -59,6 +59,36 @@ export const Main = () => {
             alert("Invalid Ticker");
           }
         });
+
+      fetch(
+        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${ticker}&apikey=6C6RIK0G4YRIAOB9`
+      )
+        .then((res) => res.json())
+        .then(async (data) => {
+          await addDoc(collection(db, "stockInfo"), {
+            symbol: ticker,
+            name: data.Name,
+            description: data.Description,
+            pe: data.PERatio,
+            tpe: data.TrailingPE,
+            fpe: data.ForwardPE,
+            eps: data.EPS,
+            dy: data.DividendYield,
+          });
+        });
+
+      fetch(
+        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${ticker}&apikey=6C6RIK0G4YRIAOB9`
+      )
+        .then((res) => res.json())
+        .then(async (data) => {
+          const dailyData = data["Time Series (Daily)"];
+          await addDoc(collection(db, "stockChartData"), {
+            symbol: ticker,
+            chartData: dailyData,
+          });
+        });
+
       getStocks();
       setShowSearch(false);
     } else {

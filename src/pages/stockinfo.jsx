@@ -2,6 +2,15 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../App.css";
 import { StockChart } from "../components/stockChart";
+import {
+  getDocs,
+  where,
+  collection,
+  getDoc,
+  doc,
+  query,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
 
 export const StockInfo = () => {
   const location = useLocation();
@@ -9,18 +18,22 @@ export const StockInfo = () => {
   const [stockData, setStockData] = useState(null);
 
   useEffect(() => {
-    function getStockInfo() {
-      fetch(
-        `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${stock.symbol}&apikey=6C6RIK0G4YRIAOB9`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          setStockData(data);
-        });
+    async function getStockInfo() {
+      const querySnapshot = query(
+        collection(db, "stockInfo"),
+        where("symbol", "==", stock.symbol)
+      );
+      console.log(querySnapshot);
+
+      const stockInfoArray = await getDocs(querySnapshot);
+      console.log(stockInfoArray);
+      const stockInfoId = stockInfoArray.docs[0].id;
+      const stockInfoData = await getDoc(doc(db, "stockInfo", stockInfoId));
+      const stockInfo = stockInfoData?.data();
+      setStockData(stockInfo);
+      console.log(stockInfo);
     }
     getStockInfo();
-    console.log(stock.symbol);
   }, [stock.symbol]);
 
   return (
@@ -32,7 +45,7 @@ export const StockInfo = () => {
               <div className="card-body">
                 <h5 className="card-title">{stock.symbol}</h5>
                 <h6 className="card-subtitle mb-2 text-muted">
-                  {stockData.Name}
+                  {stockData.name}
                 </h6>
                 <div className="card-text card-price">{stock.price}</div>
                 <div className="card-text price-change">
@@ -45,7 +58,7 @@ export const StockInfo = () => {
             <div className="card stock-card-main">
               <div className="card-body">
                 <div className="card-text card-description">
-                  {stockData.Description?.substring(0, 450) + "..."}
+                  {stockData.description?.substring(0, 450) + "..."}
                 </div>
               </div>
             </div>
@@ -60,25 +73,23 @@ export const StockInfo = () => {
                     <tbody>
                       <tr>
                         <th scope="row">PE Ratio</th>
-                        <td>{stockData.PERatio}</td>
+                        <td>{stockData.pe}</td>
                       </tr>
                       <tr>
                         <th scope="row">Trailing PE</th>
-                        <td>{stockData.TrailingPE}</td>
+                        <td>{stockData.tpe}</td>
                       </tr>
                       <tr>
                         <th scope="row">Forward PE</th>
-                        <td>{stockData.ForwardPE}</td>
+                        <td>{stockData.fpe}</td>
                       </tr>
                       <tr>
                         <th scope="row">EPS</th>
-                        <td>{stockData.EPS}</td>
+                        <td>{stockData.eps}</td>
                       </tr>
                       <tr>
                         <th scope="row">Dividend Yield</th>
-                        <td>
-                          {Math.round(stockData.DividendYield * 10000) / 100}%
-                        </td>
+                        <td>{Math.round(stockData.dy * 10000) / 100}%</td>
                       </tr>
                     </tbody>
                   </table>

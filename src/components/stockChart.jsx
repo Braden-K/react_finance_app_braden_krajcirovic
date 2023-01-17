@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
+import { db } from "../config/firebase";
 import {
   XAxis,
   YAxis,
@@ -9,21 +10,40 @@ import {
   Area,
   ResponsiveContainer,
 } from "recharts";
+import {
+  getDocs,
+  where,
+  collection,
+  getDoc,
+  doc,
+  query,
+} from "firebase/firestore";
 
 export const StockChart = (props) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${props.symbol}&apikey=6C6RIK0G4YRIAOB9`
+      const querySnapshot = query(
+        collection(db, "stockChartData"),
+        where("symbol", "==", props.symbol)
       );
-      const json = await response.json();
-      const dailyData = json["Time Series (Daily)"];
-      const chartData = Object.keys(dailyData).map((date) => {
+      console.log(querySnapshot);
+
+      const chartInfoArray = await getDocs(querySnapshot);
+      if (chartInfoArray.docs[0] === undefined) {
+        return;
+      }
+      console.log(chartInfoArray);
+      const chartInfoId = chartInfoArray.docs[0].id;
+      const chartInfoData = await getDoc(
+        doc(db, "stockChartData", chartInfoId)
+      );
+      const chartInfo = chartInfoData?.data();
+      const chartData = Object.keys(chartInfo.chartData).map((date) => {
         return {
           date: date,
-          close: parseFloat(dailyData[date]["4. close"]),
+          close: parseFloat(chartInfo.chartData[date]["4. close"]),
         };
       });
       setData(chartData.reverse());
