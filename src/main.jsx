@@ -37,7 +37,7 @@ export const Main = () => {
 
   useEffect(() => {
     getStocks();
-  }, [getStocks]);
+  }, [getStocks, user]);
 
   const addStockToWatchList = async (ticker) => {
     if (stockList.find((stock) => stock.symbol === ticker) === undefined) {
@@ -131,7 +131,7 @@ export const Main = () => {
         </button>
       )}
       <div className="container shadow p-3 mb-5 bg-white rounded">
-        <table class="table">
+        <table className="table">
           <thead>
             <tr>
               <th scope="col">Ticker</th>
@@ -151,20 +151,20 @@ export const Main = () => {
       </div>
     </div>
   ) : (
-    <div class="container pt-5">
-      <div class="row d-flex align-items-center">
-        <div class="col-12 text-center">
-          <h1 class="display-4 text-dark">Stock Tracker</h1>
+    <div className="container pt-5">
+      <div className="row d-flex align-items-center">
+        <div className="col-12 text-center">
+          <h1 className="display-4 text-dark">Stock Tracker</h1>
         </div>
       </div>
-      <div class="row d-flex align-items-center">
-        <div class="col-12 text-center">
-          <p class="lead text-secondary">
+      <div className="row d-flex align-items-center">
+        <div className="col-12 text-center">
+          <p className="lead text-secondary">
             Sign in to add stocks to your watchlist
           </p>
         </div>
       </div>
-      <div class="row d-flex justify-content-center"></div>
+      <div className="row d-flex justify-content-center"></div>
     </div>
   );
 };
