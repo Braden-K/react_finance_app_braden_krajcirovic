@@ -21,7 +21,7 @@
     "react-stockcharts": "^0.7.8",
     "recharts": "^2.3.2",
     "web-vitals": "^2.1.4",
-    "homepage": "https://Braden-K.github.io/react_finance_app_braden_krajcirovic"
+    "homepage": "https://braden-k.github.io/react_finance_app_braden_krajcirovic"
   },
   "scripts": {
     "start": "react-scripts start",
