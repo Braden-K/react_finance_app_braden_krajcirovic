@@ -6,4 +6,8 @@ Stock tracker makes use of various React hooks such as useContext, useLocation, 
 
 Much of the styling is done using Bootstrap 5.
 
+Because the Alpha Vantage API restricts calls to 5 per minute, adding stocks to the watchlist may lead to issues.
+
+The app is still a work in progress and I plan on adding many more features.
+
 https://stock-tracker-braden-krajcirovic.netlify.app/
