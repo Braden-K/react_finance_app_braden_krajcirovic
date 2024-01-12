@@ -37,7 +37,7 @@ export const Main = () => {
 
   useEffect(() => {
     getStocks();
-  }, [getStocks, user]);
+  }, [getStocks, user, stockList]);
 
   const addStockToWatchList = async (ticker) => {
     if (stockList.find((stock) => stock.symbol === ticker) === undefined) {
